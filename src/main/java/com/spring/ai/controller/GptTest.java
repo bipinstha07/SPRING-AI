@@ -1,8 +1,7 @@
 package com.spring.ai.controller;
 
+import com.spring.ai.service.ChatInterface;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/gpt")
 public class GptTest {
 
-    private ChatClient chatClientOpenAI;
-    private ChatClient chatClientGeminiAI;
 
+    private ChatInterface chatInterface;
 
-    public GptTest(@Qualifier("openAIChatClient") ChatClient chatClientGeminiAI, @Qualifier("geminiChatClient") ChatClient chatClientOpenAI) {
-        this.chatClientGeminiAI = chatClientGeminiAI;
-        this.chatClientOpenAI = chatClientOpenAI;
+    public GptTest(ChatInterface chatInterface) {
+        this.chatInterface = chatInterface;
     }
 
     @GetMapping("/test")
@@ -29,10 +26,8 @@ public class GptTest {
             @RequestParam(required = false, value = "q") String q
     ){
 
-        var resultOpenAI = chatClientOpenAI.prompt(q).call().content();
-        var resultGeminiAI = chatClientGeminiAI.prompt(q).call().content();
-        String result = "Open AI Output: "+resultOpenAI+ "/n Gemini AI Output: "+resultGeminiAI;
-        return new ResponseEntity<>(result, HttpStatus.OK);
+      String result =  chatInterface.chat(q);
+      return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
