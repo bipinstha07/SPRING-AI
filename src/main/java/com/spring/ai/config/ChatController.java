@@ -12,8 +12,8 @@ public class ChatController {
     @Bean(name="openAIChatClient")
     public ChatClient openAi(OpenAiChatModel chatModel){
         return ChatClient.builder(chatModel)
-                .defaultAdvisors()
-                .defaultSystem("You are God")
+//                .defaultAdvisors()
+//                .defaultSystem("You are God")
                 .defaultOptions(OpenAiChatOptions.builder().model("gpt-4o-mini").temperature(0.2).build())
 
                 .build();

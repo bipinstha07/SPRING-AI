@@ -2,11 +2,13 @@ package com.spring.ai.service;
 
 import com.spring.ai.dto.Response;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatImpl implements ChatInterface{
@@ -36,18 +38,32 @@ public class ChatImpl implements ChatInterface{
 //        Response resultOpenAI3 = chatClientOpenAI.prompt(q).call().entity(Response.class);
 //        
 //        Fourth Method
-        List<Response> resultOpenAI4 = chatClientOpenAI.prompt(q).call().entity(new ParameterizedTypeReference<List<Response>>() {
-        });
+//        List<Response> resultOpenAI4 = chatClientOpenAI.prompt(q).call().entity(new ParameterizedTypeReference<List<Response>>() {
+//        });
+//        resultOpenAI4.forEach(resultOpenAI3->{
+//            System.out.println(resultOpenAI3.getId());
+//            System.out.println(resultOpenAI3.getContent());
+//            System.out.println(resultOpenAI3.getNextQuestion());
+//        });
+
+//      Fifth Method
+//        String query = "As an Java expert . Reply this question: {q}";
+//
+//        var tutorial = chatClientOpenAI.prompt()
+//                .user(u->u.text(query).param("q",q))
+//                .call()
+//                .content();
+//      Sixth Method
+        PromptTemplate promptTemplate = PromptTemplate.builder().template("Ans this question in five different way of this  {q}").build();
+
+        String render = promptTemplate.render(Map.of(
+                "q",q
+        ));
+
+        var tutorial = chatClientOpenAI.prompt(render).call().content();
 
 
-
-        resultOpenAI4.forEach(resultOpenAI3->{
-            System.out.println(resultOpenAI3.getId());
-            System.out.println(resultOpenAI3.getContent());
-            System.out.println(resultOpenAI3.getNextQuestion());
-        });
-
-
-        return "hi";
+        return tutorial;
+//        return "hi";
     }
 }
